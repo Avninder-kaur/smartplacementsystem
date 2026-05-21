@@ -14,6 +14,8 @@ const navItems = [
     { label: "Application Status", to: "/student/status", icon: Activity },
     { label: "Notifications", to: "/student/notifications", icon: Bell },
 ];
+
+
 const statusColor = {
     Pending: "bg-amber-400/10 text-amber-400 border-amber-400/20",
     Shortlisted: "bg-emerald-400/10 text-emerald-400 border-emerald-400/20",
