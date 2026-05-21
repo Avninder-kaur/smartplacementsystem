@@ -14,7 +14,15 @@ const companies = [
     rating: 4.8,
     description: "A fast-growing placement partner for smart campus hiring.",
   },
+
+
+
+
+
   {
+
+
+
     id: 2,
     name: "CloudWave",
     industry: "Fintech",
@@ -23,6 +31,8 @@ const companies = [
     rating: 4.6,
     description: "Hiring talent for data-driven campus teams.",
   },
+
+  
   {
     id: 3,
     name: "Insight Labs",
