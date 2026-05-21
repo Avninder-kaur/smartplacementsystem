@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useState } from "react";
+import { api } from "@/lib/api";
 const navItems = [
     { label: "Dashboard", to: "/company/dashboard", icon: LayoutDashboard },
     { label: "Post Job", to: "/company/post-job", icon: PlusCircle },
@@ -17,6 +18,26 @@ const companySizes = ["1–50", "51–200", "201–500", "501–1000", "1000+"];
 export default function CompanyProfile() {
     const [companySize, setCompanySize] = useState("201–500");
     const [logoFile, setLogoFile] = useState(null);
+    const [logoPreview, setLogoPreview] = useState(null);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const formData = new FormData();
+            if (logoFile) {
+                formData.append("profilePic", logoFile);
+            }
+            const response = await api.putForm("/auth/profile", formData);
+            if (response?.success) {
+                toast.success("Company profile updated successfully!");
+            } else {
+                toast.error(response?.message || "Failed to upload logo");
+            }
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : "Failed to upload logo");
+        }
+    };
+
     return (<DashboardLayout navItems={navItems} title="Recruiter Portal">
       <h1 className="text-2xl font-bold mb-2">Company Profile</h1>
       <p className="text-sm text-muted-foreground mb-6">Manage your company information visible to students</p>
@@ -97,11 +118,19 @@ export default function CompanyProfile() {
         <div className="bg-card border rounded-xl p-6 space-y-4">
           <h3 className="font-semibold text-base">Company Logo</h3>
           <div className="flex items-center gap-4">
-            <div className="h-16 w-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold text-xl">
-              TC
+            <div className="h-16 w-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold text-xl overflow-hidden">
+              {logoPreview ? (<img src={logoPreview} alt="Logo preview" className="h-full w-full object-cover"/>) : "TC"}
             </div>
             <div className="space-y-2 flex-1">
-              <Input type="file" accept="image/png,image/jpeg,image/svg+xml" onChange={(e) => setLogoFile(e.target.files?.[0] || null)}/>
+              <Input type="file" accept="image/png,image/jpeg,image/svg+xml" onChange={(e) => {
+                    const file = e.target.files?.[0] || null;
+                    setLogoFile(file);
+                    if (file) {
+                        setLogoPreview(URL.createObjectURL(file));
+                    } else {
+                        setLogoPreview(null);
+                    }
+                }}/>
               <p className="text-xs text-muted-foreground">PNG, JPEG or SVG. Max 2MB. Recommended 200×200px.</p>
             </div>
           </div>
