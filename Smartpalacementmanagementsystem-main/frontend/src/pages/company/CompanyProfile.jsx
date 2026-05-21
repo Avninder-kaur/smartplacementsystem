@@ -16,13 +16,18 @@ const navItems = [
 const companySizes = ["1–50", "51–200", "201–500", "501–1000", "1000+"];
 export default function CompanyProfile() {
     const [companySize, setCompanySize] = useState("201–500");
+    const [logoFile, setLogoFile] = useState(null);
     return (<DashboardLayout navItems={navItems} title="Recruiter Portal">
       <h1 className="text-2xl font-bold mb-2">Company Profile</h1>
       <p className="text-sm text-muted-foreground mb-6">Manage your company information visible to students</p>
 
       <form className="max-w-2xl space-y-6" onSubmit={(e) => {
             e.preventDefault();
-            toast.success("Company profile updated!");
+            if (logoFile) {
+                toast.success("Logo uploaded! Company profile updated!");
+            } else {
+                toast.success("Company profile updated!");
+            }
         }}>
         {/* Basic Info */}
         <div className="bg-card border rounded-xl p-6 space-y-5">
@@ -96,7 +101,7 @@ export default function CompanyProfile() {
               TC
             </div>
             <div className="space-y-2 flex-1">
-              <Input type="file" accept="image/png,image/jpeg,image/svg+xml"/>
+              <Input type="file" accept="image/png,image/jpeg,image/svg+xml" onChange={(e) => setLogoFile(e.target.files?.[0] || null)}/>
               <p className="text-xs text-muted-foreground">PNG, JPEG or SVG. Max 2MB. Recommended 200×200px.</p>
             </div>
           </div>
