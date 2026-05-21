@@ -10,9 +10,10 @@ const {
 const { protect, authorize } = require("../middleware/auth.middleware");
 const upload = require("../middleware/upload.middleware");
 
+// API endpoint for student applications
 // Student routes
-router.post("/apply",   protect, authorize("student"), upload.single("resume"), applyToJob);
-router.get( "/student", protect, authorize("student"), getStudentApplications);
+router.post("/apply-job",   protect, authorize("student"), upload.single("resume"), applyToJob);
+router.get( "/student-applications", protect, authorize("student"), getStudentApplications);
 
 // Recruiter routes
 router.get("/recruiter/all",      protect, authorize("recruiter"), getAllRecruiterApplications);
