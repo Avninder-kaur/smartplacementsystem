@@ -104,7 +104,7 @@ export default function Register() {
           </>) : (<>
               <div className="space-y-2">
                 <Label>Company Name <span className="text-destructive">*</span></Label>
-                <Input placeholder="Acme Inc." value={name} onChange={(e) => setName(e.target.value)} required/>
+                <Input placeholder="Enter company name" value={name} onChange={(e) => setName(e.target.value)} required/>
               </div>
           </>)}
           <div className="space-y-2">
