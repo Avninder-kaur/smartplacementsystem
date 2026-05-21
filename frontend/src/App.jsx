@@ -72,8 +72,11 @@ const App = () => (<QueryClientProvider client={queryClient}>
               <Route path="/admin/jobs" element={<ProtectedRoute><AdminJobListings /></ProtectedRoute>}/>
               <Route path="/admin/reports" element={<ProtectedRoute><AdminReports /></ProtectedRoute>}/>
 
+<<<<<<< HEAD
               {/* Recruiter (alias) */}
               <Route path="/recruiter/dashboard" element={<ProtectedRoute><CompanyDashboard /></ProtectedRoute>} />
+=======
+>>>>>>> e43cb6de4a7972b30d4ee8d2d91bda11c6044968
               <Route path="*" element={<NotFound />}/>
             </Routes>
           </JobApplicationProvider>

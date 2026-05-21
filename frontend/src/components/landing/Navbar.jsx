@@ -29,12 +29,15 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-2">
           <DarkModeToggle />
           <Button variant="ghost" asChild>
+<<<<<<< HEAD
             <Link to="/login?role=recruiter">Recruiter</Link>
           </Button>
           <Button variant="ghost" asChild>
             <Link to="/login?role=admin">Admin</Link>
           </Button>
           <Button variant="ghost" asChild>
+=======
+>>>>>>> e43cb6de4a7972b30d4ee8d2d91bda11c6044968
             <Link to="/login">Login</Link>
           </Button>
           <Button asChild>
@@ -56,6 +59,7 @@ export function Navbar() {
           {navLinks.map((l) => (<Link key={l.label} to={l.to} className="block text-sm font-medium text-muted-foreground hover:text-foreground" onClick={() => setMobileOpen(false)}>
               {l.label}
             </Link>))}
+<<<<<<< HEAD
           <div className="space-y-2 pt-2">
             <Link to="/login?role=recruiter" className="block text-sm font-medium text-muted-foreground hover:text-foreground" onClick={() => setMobileOpen(false)}>
               Recruiter Portal
@@ -64,6 +68,8 @@ export function Navbar() {
               Admin Portal
             </Link>
           </div>
+=======
+>>>>>>> e43cb6de4a7972b30d4ee8d2d91bda11c6044968
           <div className="flex gap-3 pt-2">
             <Button variant="ghost" asChild className="flex-1">
               <Link to="/login">Login</Link>

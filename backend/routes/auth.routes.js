@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+// Route protection middleware applied for authenticated users
+>>>>>>> e43cb6de4a7972b30d4ee8d2d91bda11c6044968
 const express = require("express");
 const router = express.Router();
 const {

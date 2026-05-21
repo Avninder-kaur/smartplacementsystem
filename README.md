@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> e43cb6de4a7972b30d4ee8d2d91bda11c6044968
 # Smart Placement Management System— Campus Placement Portal
 
 A full-stack monorepo containing the React + TypeScript **frontend** and the Node.js + Express + MongoDB **backend** for the SmartPlacement campus placement system.
@@ -8,7 +13,11 @@ A full-stack monorepo containing the React + TypeScript **frontend** and the Nod
 
 ```
 smartplacement/
+<<<<<<< HEAD
 ├── frontend/          ← React + TypeScript + Vite + TailwindCSS + shadcn/ui
+=======
+├── frontend/          ← React + Vite + TailwindCSS + shadcn/ui
+>>>>>>> e43cb6de4a7972b30d4ee8d2d91bda11c6044968
 │   ├── src/
 │   │   ├── lib/
 │   │   │   └── api.ts           ← All API calls + TypeScript types
@@ -241,3 +250,18 @@ app.get("*", (req, res) => {
 | Backend   | Node.js, Express.js, MongoDB, Mongoose, JWT, bcryptjs, Multer |
 | Auth      | JWT (Bearer token), bcrypt password hashing       |
 | File Upload | Multer (PDF/DOC/DOCX, max 5MB)                  |
+<<<<<<< HEAD
+=======
+=======
+﻿# Smart Placement System
+>>>>>>> d1e643901ed5ff5b25555829efc538b80cc8cfdd
+=======
+﻿# Smart Placement System
+
+ Updated project documentation
+## Features
+- Student Login
+- Recruiter Dashboard
+- Placement Tracking
+>>>>>>> e181bf3d6ca4f7753fbdb147390f9b25379f579c
+>>>>>>> e43cb6de4a7972b30d4ee8d2d91bda11c6044968

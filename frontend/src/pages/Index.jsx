@@ -1,7 +1,11 @@
 import { Navbar } from "@/components/landing/Navbar";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+<<<<<<< HEAD
 import { ArrowRight, BarChart3, Building2, CheckCircle2, FileText, GraduationCap, Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
+=======
+import { ArrowRight, BarChart3, Building2, CheckCircle2, FileText, GraduationCap, Mail, MapPin, Phone } from "lucide-react";
+>>>>>>> e43cb6de4a7972b30d4ee8d2d91bda11c6044968
 import { Link } from "react-router-dom";
 const features = [
     {
@@ -64,12 +68,15 @@ export default function Index() {
             <Button size="lg" variant="outline" asChild>
               <Link to="/login">Sign In</Link>
             </Button>
+<<<<<<< HEAD
             <Button size="lg" variant="ghost" asChild>
               <Link to="/login?role=recruiter">Recruiter Portal</Link>
             </Button>
             <Button size="lg" variant="ghost" asChild>
               <Link to="/login?role=admin">Admin Portal</Link>
             </Button>
+=======
+>>>>>>> e43cb6de4a7972b30d4ee8d2d91bda11c6044968
           </motion.div>
         </div>
       </section>
@@ -127,6 +134,7 @@ export default function Index() {
               </Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
+<<<<<<< HEAD
               <Link to="/register?role=recruiter">
                 <Building2 className="mr-2 h-4 w-4"/> Recruiter Portal
               </Link>
@@ -134,6 +142,10 @@ export default function Index() {
             <Button size="lg" variant="outline" asChild>
               <Link to="/register?role=admin">
                 <ShieldCheck className="mr-2 h-4 w-4"/> Admin Portal
+=======
+              <Link to="/register">
+                <Building2 className="mr-2 h-4 w-4"/> I'm a Recruiter
+>>>>>>> e43cb6de4a7972b30d4ee8d2d91bda11c6044968
               </Link>
             </Button>
           </div>

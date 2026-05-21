@@ -26,3 +26,15 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+<<<<<<< HEAD
+=======
+
+node_modules/
+.env
+dist/
+*.pdf
+*.jpg
+*.jpeg
+*.png
+*.heic
+>>>>>>> e43cb6de4a7972b30d4ee8d2d91bda11c6044968

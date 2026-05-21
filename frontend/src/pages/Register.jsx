@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Link, useNavigate, useLocation } from "react-router-dom";
+=======
+import { Link, useNavigate } from "react-router-dom";
+>>>>>>> e43cb6de4a7972b30d4ee8d2d91bda11c6044968
 import { GraduationCap, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,10 +18,14 @@ import { useAuth } from "@/context/AuthContext";
 export default function Register() {
     const navigate = useNavigate();
     const { login } = useAuth();
+<<<<<<< HEAD
   const { search } = useLocation();
   const params = new URLSearchParams(search);
   const roleParam = params.get("role") || "student";
     const [role, setRole] = useState(roleParam);
+=======
+    const [role, setRole] = useState("student");
+>>>>>>> e43cb6de4a7972b30d4ee8d2d91bda11c6044968
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [branch, setBranch] = useState("");
@@ -35,11 +43,14 @@ export default function Register() {
     
     const handleSubmit = async (e) => {
         e.preventDefault();
+<<<<<<< HEAD
       // Validation: recruiter/company must register with company email (e.g., name@company.in)
       if (role === "recruiter" && !email.endsWith(".in")) {
         toast.error("Recruiter registration requires a company email (example: name@company.in)");
         return;
       }
+=======
+>>>>>>> e43cb6de4a7972b30d4ee8d2d91bda11c6044968
         try {
             const formData = new FormData();
             formData.append("name", name);

@@ -43,6 +43,7 @@ export default function CompanyDashboard() {
     const navigate = useNavigate();
     const { user } = useAuth();
     useEffect(() => {
+<<<<<<< HEAD
       // If not logged in or not a recruiter/company, send to login with recruiter prefill
       if (!user?.role) {
         navigate("/login?role=recruiter", { replace: true });
@@ -50,6 +51,11 @@ export default function CompanyDashboard() {
       else if (user?.role === "student") {
         navigate("/student/dashboard", { replace: true });
       }
+=======
+        if (user?.role === "student" || !user?.role) {
+            navigate("/student/dashboard", { replace: true });
+        }
+>>>>>>> e43cb6de4a7972b30d4ee8d2d91bda11c6044968
     }, [user, navigate]);
     return (<DashboardLayout navItems={navItems} title="Recruiter Portal">
       <div className="flex items-center justify-between mb-2">
