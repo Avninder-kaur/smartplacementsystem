@@ -1,3 +1,4 @@
+// Authentication middleware for secure routes
 const express = require("express");
 const router = express.Router();
 const {
