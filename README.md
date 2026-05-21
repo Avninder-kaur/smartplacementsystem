@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Smart Placement Management System— Campus Placement Portal
 
 A full-stack monorepo containing the React + TypeScript **frontend** and the Node.js + Express + MongoDB **backend** for the SmartPlacement campus placement system.
@@ -245,3 +246,12 @@ app.get("*", (req, res) => {
 =======
 ﻿# Smart Placement System
 >>>>>>> d1e643901ed5ff5b25555829efc538b80cc8cfdd
+=======
+﻿# Smart Placement System
+
+ Updated project documentation
+## Features
+- Student Login
+- Recruiter Dashboard
+- Placement Tracking
+>>>>>>> e181bf3d6ca4f7753fbdb147390f9b25379f579c
