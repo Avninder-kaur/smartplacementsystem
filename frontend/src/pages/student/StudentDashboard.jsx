@@ -15,11 +15,23 @@ const navItems = [
     { label: "Application Status", to: "/student/status", icon: Activity },
     { label: "Notifications", to: "/student/notifications", icon: Bell },
 ];
+
+
+
+
+
 const recentJobs = [
     { id: 1, title: "Frontend Developer", company: "TechCorp", location: "Bangalore", salary: "8-12 LPA", posted: "2 days ago" },
     { id: 3, title: "Backend Engineer", company: "CloudNine", location: "Hyderabad", salary: "10-15 LPA", posted: "1 day ago" },
     { id: 5, title: "ML Engineer", company: "AI Labs", location: "Pune", salary: "12-18 LPA", posted: "1 day ago" },
 ];
+
+
+
+
+
+
+
 const fadeUp = {
     hidden: { opacity: 0, y: 16 },
     visible: (i) => ({
