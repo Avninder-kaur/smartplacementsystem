@@ -10,7 +10,7 @@ A full-stack monorepo containing the React + TypeScript **frontend** and the Nod
 
 ```
 smartplacement/
-├── frontend/          ← React + TypeScript + Vite + TailwindCSS + shadcn/ui
+├── frontend/          ← React + Vite + TailwindCSS + shadcn/ui
 │   ├── src/
 │   │   ├── lib/
 │   │   │   └── api.ts           ← All API calls + TypeScript types
