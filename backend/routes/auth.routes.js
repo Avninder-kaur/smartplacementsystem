@@ -1,4 +1,4 @@
-// Authentication middleware for secure routes
+// Route protection middleware applied for authenticated users
 const express = require("express");
 const router = express.Router();
 const {
