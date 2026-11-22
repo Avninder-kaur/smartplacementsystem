@@ -61,6 +61,30 @@ export default function AvailableJobs() {
         );
     });
 
+    const handleFileChange = (e) => {
+        const file = e.target.files?.[0];
+        if (!file) {
+            setResumeFile(null);
+            return;
+        }
+        const maxBytes = 5 * 1024 * 1024;
+        const allowedExts = [".pdf", ".doc", ".docx"];
+        const ext = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();
+        if (!allowedExts.includes(ext)) {
+            toast.error("Only PDF, DOC, and DOCX files are allowed.");
+            e.target.value = "";
+            setResumeFile(null);
+            return;
+        }
+        if (file.size > maxBytes) {
+            toast.error("Resume file size must be less than 5MB.");
+            e.target.value = "";
+            setResumeFile(null);
+            return;
+        }
+        setResumeFile(file);
+    };
+
     const handleApply = async (job) => {
         setApplying(true);
         try {
@@ -138,12 +162,15 @@ export default function AvailableJobs() {
                           {job.description}
                         </p>
                         <div className="space-y-1.5">
-                          <label className="text-xs font-medium text-foreground">Attach Custom Resume (optional):</label>
+                          <div className="flex items-center justify-between">
+                            <label className="text-xs font-medium text-foreground">Attach Custom Resume (optional):</label>
+                            <span className="text-[10px] text-muted-foreground">PDF/DOC/DOCX, max 5MB</span>
+                          </div>
                           <Input
                             type="file"
                             accept=".pdf,.doc,.docx"
                             className="text-xs cursor-pointer"
-                            onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
+                            onChange={handleFileChange}
                           />
                         </div>
                         <div className="space-y-1.5">

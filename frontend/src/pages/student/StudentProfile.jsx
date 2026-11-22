@@ -9,7 +9,7 @@ import { useState, useEffect, useMemo } from "react";
 import { BranchSelect } from "@/components/ui/BranchSelect";
 import { SkillsTagInput } from "@/components/ui/SkillsTagInput";
 import { useAuth } from "@/context/AuthContext";
-import { api } from "@/lib/api";
+import API_BASE_URL, { api } from "@/lib/api";
 
 const navItems = [
     { label: "Dashboard", to: "/student/dashboard", icon: LayoutDashboard },
@@ -50,6 +50,30 @@ export default function StudentProfile() {
         if (user?.resumeURL || resumeFile) score += 20;
         return Math.max(score, 20);
     }, [name, university, branch, cgpa, user, resumeFile]);
+
+    const handleResumeChange = (e) => {
+        const file = e.target.files?.[0];
+        if (!file) {
+            setResumeFile(null);
+            return;
+        }
+        const maxBytes = 5 * 1024 * 1024;
+        const allowedExts = [".pdf", ".doc", ".docx"];
+        const ext = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();
+        if (!allowedExts.includes(ext)) {
+            toast.error("Only PDF, DOC, and DOCX files are allowed for resume.");
+            e.target.value = "";
+            setResumeFile(null);
+            return;
+        }
+        if (file.size > maxBytes) {
+            toast.error("Resume file size must be less than 5MB.");
+            e.target.value = "";
+            setResumeFile(null);
+            return;
+        }
+        setResumeFile(file);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -142,19 +166,22 @@ export default function StudentProfile() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="resume">Update Resume (.pdf, .doc, .docx)</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="resume">Update Resume</Label>
+                <span className="text-[10px] text-muted-foreground">PDF/DOC/DOCX, max 5MB</span>
+              </div>
               <Input
                 id="resume"
                 type="file"
                 accept=".pdf,.doc,.docx"
                 className="cursor-pointer"
-                onChange={(e) => setResumeFile(e.target.files?.[0] || null)}
+                onChange={handleResumeChange}
               />
               {user?.resumeURL && (
                 <p className="text-xs text-muted-foreground mt-1">
                   Current resume:{" "}
                   <a
-                    href={user.resumeURL.startsWith("http") ? user.resumeURL : `http://localhost:5000${user.resumeURL}`}
+                    href={user.resumeURL.startsWith("http") ? user.resumeURL : `${API_BASE_URL.replace(/\/api\/?$/, "")}${user.resumeURL}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-primary hover:underline inline-flex items-center gap-1"

@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion } from "framer-motion";
 import { useSearchParams } from "react-router-dom";
-import { api } from "@/lib/api";
+import API_BASE_URL, { api } from "@/lib/api";
 
 const navItems = [
     { label: "Dashboard", to: "/company/dashboard", icon: LayoutDashboard },
@@ -216,6 +216,18 @@ export default function ViewApplicants() {
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
+                {app.resumeURL && (
+                  <Button size="sm" variant="outline" asChild className="hidden sm:inline-flex">
+                    <a
+                      href={app.resumeURL.startsWith("http") ? app.resumeURL : `${API_BASE_URL.replace(/\/api\/?$/, "")}${app.resumeURL}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs"
+                    >
+                      <FileText className="h-3.5 w-3.5 mr-1"/> Resume
+                    </a>
+                  </Button>
+                )}
                 <Button size="sm" variant="outline" onClick={() => setSelectedApp(app)}>
                   View Details
                 </Button>
@@ -269,7 +281,7 @@ export default function ViewApplicants() {
               {selectedApp.resumeURL && (
                 <div className="pt-1">
                   <a
-                    href={selectedApp.resumeURL.startsWith("http") ? selectedApp.resumeURL : `http://localhost:5000${selectedApp.resumeURL}`}
+                    href={selectedApp.resumeURL.startsWith("http") ? selectedApp.resumeURL : `${API_BASE_URL.replace(/\/api\/?$/, "")}${selectedApp.resumeURL}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline font-medium"
