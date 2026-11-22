@@ -33,11 +33,17 @@ const fileFilter = (req, file, cb) => {
   } else if (file.fieldname === "resume" && documentTypes.includes(ext)) {
     cb(null, true);
   } else if (file.fieldname === "profilePic") {
-    cb(new Error("Only JPG, JPEG, PNG, and WEBP files are allowed for profile picture"), false);
+    const error = new Error("Only JPG, JPEG, PNG, and WEBP files are allowed for profile picture");
+    error.status = 400;
+    cb(error, false);
   } else if (file.fieldname === "resume") {
-    cb(new Error("Only PDF, DOC, and DOCX files are allowed for resume"), false);
+    const error = new Error("Only PDF, DOC, and DOCX files are allowed for resume");
+    error.status = 400;
+    cb(error, false);
   } else {
-    cb(new Error("Unknown file type"), false);
+    const error = new Error("Invalid file upload field or unsupported file type");
+    error.status = 400;
+    cb(error, false);
   }
 };
 

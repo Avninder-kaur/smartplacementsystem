@@ -2,6 +2,9 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { LayoutDashboard, Users, Building2, Briefcase, FileText, TrendingUp, Award, GraduationCap, } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, } from "recharts";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { api } from "@/lib/api";
+
 const navItems = [
     { label: "Dashboard", to: "/admin/dashboard", icon: LayoutDashboard },
     { label: "Manage Students", to: "/admin/students", icon: Users },
@@ -33,12 +36,7 @@ const applicationTrend = [
     { week: "W6", applications: 189 },
 ];
 const COLORS = ["#6366f1", "#22c55e", "#f59e0b", "#06b6d4", "#ec4899"];
-const summaryCards = [
-    { label: "Placement Rate", value: "92%", icon: Award, color: "text-cyan-400 bg-cyan-400/10" },
-    { label: "Avg. Package", value: "9.4 LPA", icon: TrendingUp, color: "text-emerald-400 bg-emerald-400/10" },
-    { label: "Students Placed", value: "4,815", icon: GraduationCap, color: "text-primary bg-primary/10" },
-    { label: "Top Recruiters", value: "42", icon: Building2, color: "text-amber-400 bg-amber-400/10" },
-];
+
 const fadeUp = {
     hidden: { opacity: 0, y: 16 },
     visible: (i) => ({
@@ -46,7 +44,28 @@ const fadeUp = {
         transition: { delay: i * 0.08, duration: 0.4 },
     }),
 };
+
 export default function AdminReports() {
+    const [stats, setStats] = useState(null);
+
+    useEffect(() => {
+        let isMounted = true;
+        api.get("/admin/stats")
+            .then((data) => {
+                if (isMounted && data?.stats) {
+                    setStats(data.stats);
+                }
+            })
+            .catch((err) => console.error("Failed to load admin stats for reports:", err));
+        return () => { isMounted = false; };
+    }, []);
+
+    const summaryCards = [
+        { label: "Placement Rate", value: stats ? stats.placementRate : "0%", icon: Award, color: "text-cyan-400 bg-cyan-400/10" },
+        { label: "Total Applications", value: stats ? String(stats.totalApplications) : "0", icon: TrendingUp, color: "text-emerald-400 bg-emerald-400/10" },
+        { label: "Students Placed", value: stats ? String(stats.placedStudents) : "0", icon: GraduationCap, color: "text-primary bg-primary/10" },
+        { label: "Active Recruiters", value: stats ? String(stats.totalRecruiters) : "0", icon: Building2, color: "text-amber-400 bg-amber-400/10" },
+    ];
     return (<DashboardLayout navItems={navItems} title="Admin Panel (TPO)">
       <h1 className="text-2xl font-bold mb-2">Placement Reports</h1>
       <p className="text-muted-foreground font-body mb-8">Analytics and insights across all placement activities</p>

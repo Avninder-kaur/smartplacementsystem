@@ -11,13 +11,13 @@ smartplacement/
 ├── frontend/          ← React + Vite + TailwindCSS + shadcn/ui
 │   ├── src/
 │   │   ├── lib/
-│   │   │   └── api.ts           ← All API calls + TypeScript types
+│   │   │   └── api.js           ← All API calls + client helper functions
 │   │   ├── pages/
 │   │   │   ├── student/         ← Dashboard, Jobs, Applied, Profile, Notifications
 │   │   │   ├── company/         ← Dashboard, PostJob, ManageJobs, Applicants, Profile
 │   │   │   └── admin/           ← Dashboard, Students, Companies, Jobs, Reports
 │   │   ├── context/
-│   │   │   └── JobApplicationContext.tsx
+│   │   │   └── JobApplicationContext.jsx
 │   │   └── components/
 │   └── package.json
 │
@@ -66,7 +66,7 @@ PORT=5000
 MONGO_URI=mongodb://localhost:27017/smartplacement
 JWT_SECRET=your_super_secret_jwt_key_change_this
 JWT_EXPIRES_IN=7d
-CLIENT_URL=http://localhost:8080
+CLIENT_URL=http://localhost:8081,http://localhost:5173
 NODE_ENV=development
 ```
 
@@ -94,7 +94,7 @@ npm run dev
 
 This starts:
 - **Backend** → `http://localhost:5000`
-- **Frontend** → `http://localhost:8080`
+- **Frontend** → `http://localhost:8081` (or `http://localhost:5173`)
 
 The Vite dev server proxies all `/api` and `/uploads` requests to the backend automatically.
 
@@ -188,7 +188,7 @@ All API routes are prefixed with `/api`.
 
 ## Frontend API Integration
 
-The file `frontend/src/lib/api.ts` contains a full typed API client. To use it in any page:
+The file `frontend/src/lib/api.js` contains the API client. To use it in any page:
 
 ```ts
 import { jobsApi, authApi, applicationsApi } from "@/lib/api";

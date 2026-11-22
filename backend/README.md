@@ -62,7 +62,7 @@ npm start
 | MONGO_URI       | MongoDB connection string            | mongodb://localhost:27017/smartplacement |
 | JWT_SECRET      | Secret key for signing JWTs          | change_this_to_something_long        |
 | JWT_EXPIRES_IN  | Token expiry duration                | 7d                                   |
-| CLIENT_URL      | Frontend origin (CORS)               | http://localhost:5173                |
+| CLIENT_URL      | Frontend origin (CORS)               | http://localhost:8081,http://localhost:5173 |
 
 ---
 

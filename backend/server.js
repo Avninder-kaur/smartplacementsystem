@@ -82,6 +82,11 @@ app.use((err, req, res, next) => {
     return res.status(400).json({ success: false, message: err.message });
   }
 
+  // Handle custom upload/client validation errors (e.g., fileFilter rejections)
+  if (err.status === 400 || (err.message && err.message.includes("allowed for"))) {
+    return res.status(400).json({ success: false, message: err.message });
+  }
+
   // Handle Mongoose CastError (e.g., malformed ObjectId)
   if (err.name === "CastError") {
     return res.status(400).json({ success: false, message: `Invalid ${err.path}: ${err.value}` });

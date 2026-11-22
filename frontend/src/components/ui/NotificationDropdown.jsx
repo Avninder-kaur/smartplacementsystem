@@ -1,15 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Bell, Check, Briefcase, CheckCircle2, Calendar, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Popover, PopoverContent, PopoverTrigger, } from "@/components/ui/popover";
-const initialNotifications = [
-    { id: 1, type: "job", message: "New job posted: Frontend Developer at TechCorp", time: "2 min ago", read: false },
-    { id: 2, type: "shortlisted", message: "You've been shortlisted for Data Analyst at DataWise", time: "1 hour ago", read: false },
-    { id: 3, type: "interview", message: "Interview scheduled with CloudNine on Mar 15", time: "3 hours ago", read: false },
-    { id: 4, type: "rejected", message: "Application for Designer at DesignHub was not selected", time: "1 day ago", read: true },
-    { id: 5, type: "job", message: "New job posted: ML Engineer at AI Labs", time: "2 days ago", read: true },
-];
+import { useAuth } from "@/context/AuthContext";
+import { api } from "@/lib/api";
+
 const iconMap = {
     job: Briefcase,
     shortlisted: CheckCircle2,
@@ -22,15 +18,79 @@ const colorMap = {
     interview: "text-amber-400",
     rejected: "text-destructive",
 };
+
 export function NotificationDropdown() {
-    const [notifications, setNotifications] = useState(initialNotifications);
+    const { user } = useAuth();
+    const [liveItems, setLiveItems] = useState([]);
+    const [readIds, setReadIds] = useState(() => new Set());
+
+    useEffect(() => {
+        let isMounted = true;
+        const promises = [api.get("/jobs?limit=4")];
+        if (user?.role === "student") {
+            promises.push(api.get("/applications/student"));
+        }
+
+        Promise.allSettled(promises).then(([jobsRes, appsRes]) => {
+            if (!isMounted) return;
+            const items = [];
+
+            if (appsRes?.status === "fulfilled" && appsRes.value?.applications) {
+                appsRes.value.applications.slice(0, 3).forEach((app) => {
+                    const title = app.jobId?.title || "Job";
+                    const company = app.jobId?.company || "Company";
+                    if (app.status === "Shortlisted") {
+                        items.push({
+                            id: `app-s-${app._id}`,
+                            type: "shortlisted",
+                            message: `Shortlisted for ${title} at ${company}!`,
+                            time: "Recent",
+                        });
+                    } else if (app.status === "Interview Scheduled") {
+                        items.push({
+                            id: `app-i-${app._id}`,
+                            type: "interview",
+                            message: `Interview for ${title} at ${company}`,
+                            time: "Scheduled",
+                        });
+                    }
+                });
+            }
+
+            if (jobsRes.status === "fulfilled" && jobsRes.value?.jobs) {
+                jobsRes.value.jobs.slice(0, 3).forEach((j) => {
+                    items.push({
+                        id: `job-${j._id}`,
+                        type: "job",
+                        message: `New job: ${j.title} at ${j.company}`,
+                        time: j.createdAt ? new Date(j.createdAt).toLocaleDateString() : "New",
+                    });
+                });
+            }
+
+            setLiveItems(items);
+        });
+
+        return () => { isMounted = false; };
+    }, [user]);
+
+    const notifications = useMemo(() => {
+        return liveItems.map((n) => ({
+            ...n,
+            read: readIds.has(n.id),
+        }));
+    }, [liveItems, readIds]);
+
     const unreadCount = notifications.filter((n) => !n.read).length;
+
     const markAsRead = (id) => {
-        setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
+        setReadIds((prev) => new Set([...prev, id]));
     };
+
     const markAllRead = () => {
-        setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+        setReadIds(new Set(notifications.map((n) => n.id)));
     };
+
     return (<Popover>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
@@ -48,21 +108,25 @@ export function NotificationDropdown() {
             </button>)}
         </div>
         <div className="max-h-72 overflow-y-auto">
-          {notifications.slice(0, 4).map((n) => {
-            const Icon = iconMap[n.type];
-            return (<div key={n.id} className={`flex items-start gap-3 px-4 py-3 border-b last:border-0 transition-colors hover:bg-accent/50 ${!n.read ? "bg-primary/5" : ""}`}>
-                <Icon className={`h-4 w-4 mt-0.5 shrink-0 ${colorMap[n.type]}`}/>
-                <div className="flex-1 min-w-0">
-                  <p className={`text-sm leading-snug ${!n.read ? "font-medium" : "text-muted-foreground"}`}>
-                    {n.message}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">{n.time}</p>
-                </div>
-                {!n.read && (<button onClick={() => markAsRead(n.id)} className="shrink-0 p-1 rounded hover:bg-accent" title="Mark as read">
-                    <Check className="h-3.5 w-3.5 text-muted-foreground"/>
-                  </button>)}
-              </div>);
-        })}
+          {notifications.length === 0 ? (
+            <p className="text-xs text-muted-foreground text-center py-6">No new notifications</p>
+          ) : (
+            notifications.slice(0, 4).map((n) => {
+              const Icon = iconMap[n.type] || Briefcase;
+              return (<div key={n.id} className={`flex items-start gap-3 px-4 py-3 border-b last:border-0 transition-colors hover:bg-accent/50 ${!n.read ? "bg-primary/5" : ""}`}>
+                  <Icon className={`h-4 w-4 mt-0.5 shrink-0 ${colorMap[n.type] || "text-primary"}`}/>
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-sm leading-snug ${!n.read ? "font-medium" : "text-muted-foreground"}`}>
+                      {n.message}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">{n.time}</p>
+                  </div>
+                  {!n.read && (<button onClick={() => markAsRead(n.id)} className="shrink-0 p-1 rounded hover:bg-accent" title="Mark as read">
+                      <Check className="h-3.5 w-3.5 text-muted-foreground"/>
+                    </button>)}
+                </div>);
+            })
+          )}
         </div>
         <div className="border-t px-4 py-2">
           <Link to="/student/notifications" className="text-xs text-primary hover:underline block text-center">

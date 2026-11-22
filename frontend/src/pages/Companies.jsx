@@ -1,10 +1,12 @@
 import { Navbar } from "@/components/landing/Navbar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Building2, Star, Briefcase, MapPin, Globe2 } from "lucide-react";
+import { Building2, Star, Briefcase, MapPin, Globe2, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { api } from "@/lib/api";
 
-const companies = [
+const fallbackCompanies = [
   {
     id: 1,
     name: "TechPulse",
@@ -14,15 +16,7 @@ const companies = [
     rating: 4.8,
     description: "A fast-growing placement partner for smart campus hiring.",
   },
-
-
-
-
-
   {
-
-
-
     id: 2,
     name: "CloudWave",
     industry: "Fintech",
@@ -31,8 +25,6 @@ const companies = [
     rating: 4.6,
     description: "Hiring talent for data-driven campus teams.",
   },
-
-  
   {
     id: 3,
     name: "Insight Labs",
@@ -54,6 +46,43 @@ const companies = [
 ];
 
 export default function Companies() {
+  const [companies, setCompanies] = useState(fallbackCompanies);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+    api.get("/jobs")
+      .then((data) => {
+        if (!isMounted) return;
+        const jobs = data.jobs || [];
+        if (jobs.length > 0) {
+          const map = new Map();
+          jobs.forEach((j) => {
+            const compName = j.company || "Company";
+            if (!map.has(compName)) {
+              map.set(compName, {
+                id: j._id,
+                name: compName,
+                industry: j.jobType || "Technology",
+                location: j.location || "Onsite",
+                openings: j.openings || 1,
+                rating: 4.8,
+                description: j.description ? (j.description.slice(0, 100) + "...") : "Campus hiring partner on SmartPlacement.",
+              });
+            } else {
+              const existing = map.get(compName);
+              existing.openings += (j.openings || 1);
+            }
+          });
+          setCompanies(Array.from(map.values()));
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+    return () => { isMounted = false; };
+  }, []);
   return (<div className="min-h-screen bg-background">
       <Navbar />
       <section className="container py-20">

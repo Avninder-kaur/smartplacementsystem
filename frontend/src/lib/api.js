@@ -14,6 +14,14 @@ const parseResponse = async (response) => {
   }
 
   if (!response.ok) {
+    if (response.status === 401) {
+      try {
+        localStorage.removeItem("smartplacement_token");
+        localStorage.removeItem("smartplacement_user");
+      } catch {
+        // ignore storage errors in restricted contexts
+      }
+    }
     const message = data?.message || `Request failed with status ${response.status}`;
     const error = new Error(message);
     error.status = response.status;

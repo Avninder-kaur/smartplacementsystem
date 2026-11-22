@@ -1,8 +1,11 @@
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { LayoutDashboard, User, Briefcase, FileCheck, Activity, Bell, CheckCircle2, Calendar, XCircle, Check, } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
+import { useJobApplications } from "@/context/JobApplicationContext";
+import { api } from "@/lib/api";
+
 const navItems = [
     { label: "Dashboard", to: "/student/dashboard", icon: LayoutDashboard },
     { label: "My Profile", to: "/student/profile", icon: User },
@@ -11,16 +14,7 @@ const navItems = [
     { label: "Application Status", to: "/student/status", icon: Activity },
     { label: "Notifications", to: "/student/notifications", icon: Bell },
 ];
-const initialNotifications = [
-    { id: 1, type: "job", message: "New job posted: Frontend Developer at TechCorp", timestamp: "2026-03-10 09:15 AM", read: false },
-    { id: 2, type: "applied", message: "Your application for Data Analyst at DataWise was submitted successfully", timestamp: "2026-03-09 03:42 PM", read: false },
-    { id: 3, type: "shortlisted", message: "You've been shortlisted for Backend Engineer at CloudNine", timestamp: "2026-03-09 11:20 AM", read: false },
-    { id: 4, type: "interview", message: "Interview scheduled with AI Labs on March 15, 2026 at 10:00 AM", timestamp: "2026-03-08 05:00 PM", read: false },
-    { id: 5, type: "rejected", message: "Application for Product Designer at DesignHub was not selected", timestamp: "2026-03-08 02:30 PM", read: true },
-    { id: 6, type: "job", message: "New job posted: ML Engineer at AI Labs", timestamp: "2026-03-07 10:00 AM", read: true },
-    { id: 7, type: "job", message: "New job posted: DevOps Engineer at InfraMax", timestamp: "2026-03-06 09:00 AM", read: true },
-    { id: 8, type: "applied", message: "Your application for Frontend Developer at TechCorp was submitted successfully", timestamp: "2026-03-05 04:15 PM", read: true },
-];
+
 const iconMap = {
     job: Briefcase,
     applied: FileCheck,
@@ -49,16 +43,95 @@ const badgeColorMap = {
     interview: "bg-cyan-400/10 text-cyan-400 border-cyan-400/20",
     rejected: "bg-destructive/10 text-destructive border-destructive/20",
 };
+
 export default function StudentNotifications() {
-    const [notifications, setNotifications] = useState(initialNotifications);
+    const { applications } = useJobApplications();
+    const [jobs, setJobs] = useState([]);
+    const [readIds, setReadIds] = useState(() => new Set());
     const [filter, setFilter] = useState("all");
+
+    useEffect(() => {
+        let isMounted = true;
+        api.get("/jobs?limit=5")
+            .then((data) => {
+                if (isMounted) setJobs(data.jobs || []);
+            })
+            .catch(() => {});
+        return () => { isMounted = false; };
+    }, []);
+
+    const notifications = useMemo(() => {
+        const list = [];
+
+        applications.forEach((app) => {
+            const job = app.jobId || {};
+            const title = job.title || "Job Listing";
+            const company = job.company || "Company";
+            const time = app.createdAt ? new Date(app.createdAt).toLocaleString() : "Recently";
+
+            if (app.status === "Shortlisted") {
+                list.push({
+                    id: `app-shortlisted-${app._id}`,
+                    type: "shortlisted",
+                    message: `You've been shortlisted for ${title} at ${company}!`,
+                    timestamp: time,
+                });
+            } else if (app.status === "Interview Scheduled") {
+                const dateStr = app.interviewDate ? new Date(app.interviewDate).toLocaleDateString() : "";
+                list.push({
+                    id: `app-interview-${app._id}`,
+                    type: "interview",
+                    message: `Interview scheduled for ${title} at ${company}${dateStr ? ` on ${dateStr}` : ""}`,
+                    timestamp: time,
+                });
+            } else if (app.status === "Offered") {
+                list.push({
+                    id: `app-offered-${app._id}`,
+                    type: "shortlisted",
+                    message: `Congratulations! Offer extended for ${title} at ${company}.`,
+                    timestamp: time,
+                });
+            } else if (app.status === "Rejected") {
+                list.push({
+                    id: `app-rejected-${app._id}`,
+                    type: "rejected",
+                    message: `Application update: Status set to Rejected for ${title} at ${company}.`,
+                    timestamp: time,
+                });
+            }
+
+            list.push({
+                id: `app-applied-${app._id}`,
+                type: "applied",
+                message: `Your application for ${title} at ${company} was submitted successfully.`,
+                timestamp: time,
+            });
+        });
+
+        jobs.forEach((j) => {
+            list.push({
+                id: `job-${j._id}`,
+                type: "job",
+                message: `New job posted: ${j.title} at ${j.company}`,
+                timestamp: j.createdAt ? new Date(j.createdAt).toLocaleString() : "Recently",
+            });
+        });
+
+        return list.map((n) => ({
+            ...n,
+            read: readIds.has(n.id),
+        }));
+    }, [applications, jobs, readIds]);
+
     const filtered = filter === "all" ? notifications : notifications.filter((n) => n.type === filter);
     const unreadCount = notifications.filter((n) => !n.read).length;
+
     const markAsRead = (id) => {
-        setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
+        setReadIds((prev) => new Set([...prev, id]));
     };
+
     const markAllRead = () => {
-        setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+        setReadIds(new Set(notifications.map((n) => n.id)));
     };
     const filters = [
         { label: "All", value: "all" },
